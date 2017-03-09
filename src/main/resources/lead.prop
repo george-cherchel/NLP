@@ -1,0 +1,37 @@
+#
+# Features
+#
+useClassFeature=true
+1.useNGrams=true
+2.useNGrams=true
+3.useNGrams=true
+4.useNGrams=true
+5.useNGrams=true
+6.useNGrams=true
+7.useNGrams=true
+8.useNGrams=true
+
+#
+# Printing
+#
+# printClassifier=HighWeight
+printClassifierParam=200
+#
+# Mapping
+#
+goldAnswerColumn=0
+displayedColumn=2
+#
+# Optimization
+#
+intern=true
+sigma=3
+useQN=true
+QNsize=15
+tolerance=1e-4
+
+csvInput=true
+inputFormat=header
+
+serializeTo = src/main/resources/ner-model.ser.gz
+printTo = src/main/resources/ner-model.ser.gz
