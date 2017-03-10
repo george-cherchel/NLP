@@ -2,15 +2,12 @@
 # Features
 #
 useClassFeature=true
+
 0.useNGrams=true
-1.useNGrams=true
-2.useNGrams=true
-3.useNGrams=true
-4.useNGrams=true
-#5.useNGrams=true
-6.useNGrams=true
-7.useNGrams=true
-8.useNGrams=true
+# 1.usePrefixSuffixNGrams=true
+# 1.maxNGramLeng=4
+# 1.minNGramLeng=1
+# 1.binnedLengths=10,20,30
 
 #
 # Printing
@@ -33,3 +30,20 @@ tolerance=1e-4
 
 csvInput=true
 inputFormat=header
+
+
+useClassFeature=true
+useWord=true
+useNGrams=true
+noMidNGrams=true
+maxNGramLeng=6
+usePrev=true
+useNext=true
+useSequences=true
+usePrevSequences=true
+maxLeft=1
+useTypeSeqs=true
+useTypeSeqs2=true
+useTypeySequences=true
+wordShape=chris2useLC
+useDisjunctive=true
