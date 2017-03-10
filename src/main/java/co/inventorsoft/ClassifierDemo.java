@@ -20,6 +20,7 @@ class ClassifierDemo {
     ColumnDataClassifier cdc = new ColumnDataClassifier("src/main/resources/examples/cheese2007.prop");
     Classifier<String,String> cl =
         cdc.makeClassifier(cdc.readTrainingExamples("src/main/resources/examples/cheeseDisease.train"));
+    System.out.println(cl);
     for (String line : ObjectBank.getLineIterator("src/main/resources/examples/cheeseDisease.test", "utf-8")) {
       // instead of the method in the line below, if you have the individual elements
       // already you can use cdc.makeDatumFromStrings(String[])
