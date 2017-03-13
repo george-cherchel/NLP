@@ -3,7 +3,7 @@
 #
 useClassFeature=true
 
-0.useNGrams=true
+1.useNGrams=true
 # 1.usePrefixSuffixNGrams=true
 # 1.maxNGramLeng=4
 # 1.minNGramLeng=1
@@ -17,7 +17,7 @@ printClassifierParam=200
 #
 # Mapping
 #
-goldAnswerColumn=5
+goldAnswerColumn=0
 displayedColumn=10
 #
 # Optimization

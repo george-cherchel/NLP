@@ -2,6 +2,7 @@ package co.inventorsoft;
 
 import edu.stanford.nlp.classify.Classifier;
 import edu.stanford.nlp.classify.ColumnDataClassifier;
+import edu.stanford.nlp.classify.GeneralDataset;
 import edu.stanford.nlp.classify.LinearClassifier;
 import edu.stanford.nlp.ling.Datum;
 import edu.stanford.nlp.objectbank.ObjectBank;
@@ -18,15 +19,16 @@ class ClassifierDemo {
 
   public static void main(String[] args) throws Exception {
     ColumnDataClassifier cdc = new ColumnDataClassifier("src/main/resources/examples/cheese2007.prop");
+    GeneralDataset<String, String> train = cdc.readTrainingExamples("src/main/resources/examples/cheeseDisease.train");
     Classifier<String,String> cl =
-        cdc.makeClassifier(cdc.readTrainingExamples("src/main/resources/examples/cheeseDisease.train"));
-    System.out.println(cl);
+        cdc.makeClassifier(train);
+//    System.out.println(cl);
     for (String line : ObjectBank.getLineIterator("src/main/resources/examples/cheeseDisease.test", "utf-8")) {
       // instead of the method in the line below, if you have the individual elements
       // already you can use cdc.makeDatumFromStrings(String[])
 //        cdc.makeDatumFromStrings()
       Datum<String, String> d = cdc.makeDatumFromLine(line);
-      System.out.println(line + "  ==>  " + cl.classOf(d));
+      System.out.println(line + "  ==>  " + cl.scoresOf(d));
     }
 
 //    demonstrateSerialization();
