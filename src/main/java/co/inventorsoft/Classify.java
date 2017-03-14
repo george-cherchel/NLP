@@ -4,13 +4,7 @@ import edu.stanford.nlp.classify.Classifier;
 import edu.stanford.nlp.classify.ColumnDataClassifier;
 import edu.stanford.nlp.classify.Dataset;
 import edu.stanford.nlp.classify.GeneralDataset;
-import edu.stanford.nlp.classify.WeightedRVFDataset;
-import edu.stanford.nlp.ling.BasicDatum;
-import edu.stanford.nlp.ling.BasicDocument;
 import edu.stanford.nlp.ling.Datum;
-import edu.stanford.nlp.ling.Document;
-import edu.stanford.nlp.ling.RVFDatum;
-import edu.stanford.nlp.objectbank.ObjectBank;
 import edu.stanford.nlp.util.ErasureUtils;
 
 import java.io.File;
@@ -25,53 +19,22 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Classify {
 
-    private static String trainedFileModel = "src/main/resources/traindedModel";
-
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
-//        ColumnDataClassifier cdc = new ColumnDataClassifier("src/main/resources/lead.prop");
-        ColumnDataClassifier cdc = new ColumnDataClassifier("src/main/resources/examples/cheese2007.prop");
-
-        File trainedFile = new File(trainedFileModel);
-        if (!trainedFile.exists()) {
-            serialization(cdc, trainedFileModel);
-        }
-        Classifier cl = getClassifier(trainedFileModel);
-        System.out.println(cl);
-        trainedFile.delete();
-        List<String> tests = Files.readAllLines(Paths.get("src/main/resources/test.csv"));
-        tests.forEach(e -> {
-            Datum<String, String> d = cdc.makeDatumFromStrings(new String[] {"client", e});
-            System.out.println(e + "  ==>  " + cl.scoresOf(d));
-        });
-    }
-
-    private static void serialization(ColumnDataClassifier cdc, String destinationFileName) throws IOException {
-        List<String> files = new ArrayList<>();
-        files.add("src/main/resources/lead_titles_2016.csv");
-
-//        GeneralDataset<String, String> rvfData = cdc.readTrainingExamples("src/main/resources/leads.csv");
-//        Classifier<String, String> stringStringClassifier = cdc.makeClassifier(rvfData);
-
-        GeneralDataset<String, String> generalDataset = new Dataset();
-        List<String> clients = getClientTitles(files);
-        List<String> nonClients = Files.readAllLines(Paths.get("src/main/resources/occupations.csv"));
-        generalDataset.add(new BasicDatum(clients, "clients"));
-        generalDataset.add(new BasicDatum(nonClients, "non"));
+    private void createClassifier(ColumnDataClassifier cdc, File destinationFile, GeneralDataset generalDataset) throws IOException {
         Classifier<String, String> cl = cdc.makeClassifier(generalDataset);
-        try (OutputStream outputStream = new FileOutputStream(destinationFileName)) {
+        try (OutputStream outputStream = new FileOutputStream(destinationFile)) {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
             objectOutputStream.writeObject(cl);
             objectOutputStream.close();
         }
     }
 
-    private static Classifier getClassifier(String trainedFileModel) {
-        try (InputStream fileInputStream = new FileInputStream(trainedFileModel)) {
+    private Classifier getClassifier(File trainedFile) {
+        try (InputStream fileInputStream = new FileInputStream(trainedFile)) {
             ObjectInputStream ois = new ObjectInputStream(fileInputStream);
             return ErasureUtils.uncheckedCast(ois.readObject());
         } catch (FileNotFoundException e) {
@@ -84,10 +47,37 @@ public class Classify {
         return null;
     }
 
-    private static List<String> getClientTitles(List<String> files) {
+    private List<String> getClientTitles(List<String> files) {
         CsvReadService csvReadService = new CsvReadService();
         List<String> res = new ArrayList<>();
         files.forEach(e -> csvReadService.parse(e).stream().map(CsvWrapper::getTitle).forEach(res::add));
         return res;
+    }
+
+    private List<Datum<String, String>> makeTrainingData(ColumnDataClassifier cdc, List<String> data, String className) {
+        return data.stream().map(e -> cdc.makeDatumFromStrings(new String[] {className, e})).collect(Collectors.toList());
+    }
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        Classify classify = new Classify();
+        ColumnDataClassifier cdc = new ColumnDataClassifier("src/main/resources/lead.prop");
+        File trainedFile = new File("src/main/resources/trainedModel");
+        if (!trainedFile.exists()) {
+            List<String> files = new ArrayList<>();
+            files.add("src/main/resources/lead_titles_2016.csv");
+            List<String> nonClients = Files.readAllLines(Paths.get("src/main/resources/occupations.csv"));
+            GeneralDataset<String, String> generalDataset = new Dataset<>();
+            List<String> clients = classify.getClientTitles(files);
+            generalDataset.addAll(classify.makeTrainingData(cdc, clients, "client"));
+            generalDataset.addAll(classify.makeTrainingData(cdc, nonClients, "non"));
+            classify.createClassifier(cdc, trainedFile, generalDataset);
+        }
+        Classifier cl = classify.getClassifier(trainedFile);
+        trainedFile.delete();
+        List<String> tests = Files.readAllLines(Paths.get("src/main/resources/test.csv"));
+        tests.forEach(e -> {
+            Datum<String, String> d = cdc.makeDatumFromStrings(new String[] {"", e});
+            System.out.println(e + "  ==>  " + cl.classOf(d));
+        });
     }
 }

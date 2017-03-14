@@ -4,6 +4,7 @@ import edu.stanford.nlp.classify.Classifier;
 import edu.stanford.nlp.classify.ColumnDataClassifier;
 import edu.stanford.nlp.classify.GeneralDataset;
 import edu.stanford.nlp.classify.LinearClassifier;
+import edu.stanford.nlp.ling.BasicDatum;
 import edu.stanford.nlp.ling.Datum;
 import edu.stanford.nlp.objectbank.ObjectBank;
 import edu.stanford.nlp.util.ErasureUtils;
@@ -14,22 +15,25 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
 
 class ClassifierDemo {
 
   public static void main(String[] args) throws Exception {
     ColumnDataClassifier cdc = new ColumnDataClassifier("src/main/resources/examples/cheese2007.prop");
-    GeneralDataset<String, String> train = cdc.readTrainingExamples("src/main/resources/examples/cheeseDisease.train");
+    GeneralDataset<String, String> train = cdc.readTrainingExamples("src/main/resources/examples/cheeseDisease.train.csv");
     Classifier<String,String> cl =
         cdc.makeClassifier(train);
 //    System.out.println(cl);
-    for (String line : ObjectBank.getLineIterator("src/main/resources/examples/cheeseDisease.test", "utf-8")) {
+//    for (String line : ObjectBank.getLineIterator("src/main/resources/examples/cheeseDisease.test", "utf-8")) {
       // instead of the method in the line below, if you have the individual elements
       // already you can use cdc.makeDatumFromStrings(String[])
 //        cdc.makeDatumFromStrings()
-      Datum<String, String> d = cdc.makeDatumFromLine(line);
-      System.out.println(line + "  ==>  " + cl.scoresOf(d));
-    }
+      Datum<String, String> d = new BasicDatum<>(Collections.singleton("BattenSpielmeyer-Vogt Disease"));
+//      Datum<String, String> d = cdc.makeDatumFromLine("e\tBattenSpielmeyer-Vogt Disease");
+      System.out.println("  ==>  " + cl.scoresOf(d));
+//      System.out.println(line + "  ==>  " + cl.scoresOf(d));
+//    }
 
 //    demonstrateSerialization();
   }
@@ -40,7 +44,7 @@ class ClassifierDemo {
     System.out.println("Demonstrating working with a serialized classifier");
     ColumnDataClassifier cdc = new ColumnDataClassifier("src/main/resources/examples/cheese2007.prop");
     Classifier<String,String> cl =
-        cdc.makeClassifier(cdc.readTrainingExamples("src/main/resources/examples/cheeseDisease.train"));
+        cdc.makeClassifier(cdc.readTrainingExamples("src/main/resources/examples/cheeseDisease.train.csv"));
 
     // Exhibit serialization and deserialization working. Serialized to bytes in memory for simplicity
     System.out.println(); System.out.println();

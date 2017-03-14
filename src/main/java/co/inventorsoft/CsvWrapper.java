@@ -13,15 +13,12 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@JsonPropertyOrder({"Title", "Lead Type"})
+@JsonPropertyOrder({"title"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CsvWrapper implements Comparable<CsvWrapper> {
 
     @JsonProperty("Title")
     public String title;
-
-    @JsonProperty("Lead Type")
-    public String leadType;
 
     @Override
     public int compareTo(CsvWrapper o) {

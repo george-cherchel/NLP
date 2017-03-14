@@ -2,23 +2,16 @@
 # Features
 #
 useClassFeature=true
-
 1.useNGrams=true
-# 1.usePrefixSuffixNGrams=true
-# 1.maxNGramLeng=4
-# 1.minNGramLeng=1
-# 1.binnedLengths=10,20,30
-
-#
-# Printing
-#
-# printClassifier=HighWeight
-printClassifierParam=200
+1.usePrefixSuffixNGrams=true
+1.maxNGramLeng=4
+1.minNGramLeng=1
+1.binnedLengths=10,20,30
 #
 # Mapping
 #
 goldAnswerColumn=0
-displayedColumn=10
+# displayedColumn=1
 #
 # Optimization
 #
@@ -27,23 +20,6 @@ sigma=3
 useQN=true
 QNsize=15
 tolerance=1e-4
-
-csvInput=true
-inputFormat=header
-
-
-useClassFeature=true
-useWord=true
-useNGrams=true
-noMidNGrams=true
-maxNGramLeng=6
-usePrev=true
-useNext=true
-useSequences=true
-usePrevSequences=true
-maxLeft=1
-useTypeSeqs=true
-useTypeSeqs2=true
-useTypeySequences=true
-wordShape=chris2useLC
-useDisjunctive=true
+#
+# Training input
+#

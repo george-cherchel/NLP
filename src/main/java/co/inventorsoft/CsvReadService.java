@@ -27,19 +27,4 @@ public class CsvReadService {
         }
         return result;
     }
-
-    public static void main(String[] args) throws IOException {
-        CsvReadService csvReadService = new CsvReadService();
-        System.out.println(csvReadService.parse("src/main/resources/lead_titles_2016.csv").stream().distinct().count());
-//        List<CsvWrapper> parsed = csvReadService.parse(file);
-//        Files.write(Paths.get("src/main/resources/partners.csv"), //.filter(e -> "Partner".equals(e.getLeadType()))
-//                parsed.stream().sorted().map(e -> e.getLeadType() + ", " + e.getTitle()).distinct().collect(Collectors.toList()));
-//        Long count = parsed.stream().filter(e -> "Partner".equals(e.getLeadType())).collect(Collectors)
-
-//        System.out.println(count);
-
-//        for (int i = 0; i < 10; ++i) {
-//            System.out.println(parsed.get(i));
-//        }
-    }
 }
